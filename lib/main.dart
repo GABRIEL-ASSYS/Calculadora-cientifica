@@ -26,6 +26,12 @@ class CalculadoraCientifica extends StatefulWidget {
 class _CalculadoraCientificaState extends State<CalculadoraCientifica> {
   String _input = '';
 
+  void _calculateSine() {
+    setState(() {
+      _input = 'sin($_input)';
+    });
+  }
+
   void _appendInput(String value) {
     setState(() {
       _input += value;
@@ -153,20 +159,28 @@ class _CalculadoraCientificaState extends State<CalculadoraCientifica> {
   }
 
   void _onButtonPressed(String text) {
-    if (text == '=') {
-      _calculateResult();
-    } else if (text == 'C') {
-      _clearInput();
-    } else if (text == '+') {
-      _appendInput('+');
-    } else if (text == '-') {
-      _subtractOperator();
-    } else if (text == '*') {
-      _multiplyOperator();
-    } else if (text == '/') {
-      _divideOperator();
-    } else {
-      _appendInput(text);
-    }
+  if (text == '=') {
+    _calculateResult();
+  } else if (text == 'C') {
+    _clearInput();
+  } else if (text == '+') {
+    _appendInput('+');
+  } else if (text == '-') {
+    _subtractOperator();
+  } else if (text == '*') {
+    _multiplyOperator();
+  } else if (text == '/') {
+    _divideOperator();
+  } else if (text == 'sin') {
+    _appendInput('sin(');
+  } else if (text == 'cos') {
+    _appendInput('cos(');
+  } else if (text == 'tan') {
+    _appendInput('tan(');
+  } else if (text == '^') {
+    _appendInput('^');
+  } else {
+    _appendInput(text);
   }
+}
 }
