@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:math_expressions/math_expressions.dart';
 
 void main() {
@@ -26,9 +27,19 @@ class CalculadoraCientifica extends StatefulWidget {
 class _CalculadoraCientificaState extends State<CalculadoraCientifica> {
   String _input = '';
 
+  void _calculateSquareRoot() {
+    setState(() {
+      double inputValue = double.tryParse(_input) ?? 0.0;
+      double result = sqrt(inputValue);
+      _input = result.toString();
+    });
+  }
+
   void _calculateSine() {
     setState(() {
-      _input = 'sin($_input)';
+      double inputValue = double.tryParse(_input) ?? 0.0;
+      double result = sin(inputValue);
+      _input = result.toString();
     });
   }
 
@@ -64,10 +75,7 @@ class _CalculadoraCientificaState extends State<CalculadoraCientifica> {
 
   void _calculateResult() {
     try {
-      Parser p = Parser();
-      Expression exp = p.parse(_input);
-      ContextModel cm = ContextModel();
-      double result = exp.evaluate(EvaluationType.REAL, cm);
+      double result = evaluateExpression(_input);
       setState(() {
         _input = result.toString();
       });
@@ -76,6 +84,17 @@ class _CalculadoraCientificaState extends State<CalculadoraCientifica> {
         _input = 'Erro';
       });
     }
+  }
+
+  double evaluateExpression(String expression) {
+    String cleanedExpression = expression
+        .replaceAll('sin', 'sin(')
+        .replaceAll('cos', 'cos(')
+        .replaceAll('tan', 'tan(');
+    Parser p = Parser();
+    Expression exp = p.parse(cleanedExpression);
+    ContextModel cm = ContextModel();
+    return exp.evaluate(EvaluationType.REAL, cm);
   }
 
   @override
@@ -159,28 +178,30 @@ class _CalculadoraCientificaState extends State<CalculadoraCientifica> {
   }
 
   void _onButtonPressed(String text) {
-  if (text == '=') {
-    _calculateResult();
-  } else if (text == 'C') {
-    _clearInput();
-  } else if (text == '+') {
-    _appendInput('+');
-  } else if (text == '-') {
-    _subtractOperator();
-  } else if (text == '*') {
-    _multiplyOperator();
-  } else if (text == '/') {
-    _divideOperator();
-  } else if (text == 'sin') {
-    _appendInput('sin(');
-  } else if (text == 'cos') {
-    _appendInput('cos(');
-  } else if (text == 'tan') {
-    _appendInput('tan(');
-  } else if (text == '^') {
-    _appendInput('^');
-  } else {
-    _appendInput(text);
+    if (text == '=') {
+      _calculateResult();
+    } else if (text == 'C') {
+      _clearInput();
+    } else if (text == '+') {
+      _appendInput('+');
+    } else if (text == '-') {
+      _subtractOperator();
+    } else if (text == '*') {
+      _multiplyOperator();
+    } else if (text == '/') {
+      _divideOperator();
+    } else if (text == 'sin') {
+      _appendInput('sin(');
+    } else if (text == 'cos') {
+      _appendInput('cos(');
+    } else if (text == 'tan') {
+      _appendInput('tan(');
+    } else if (text == '^') {
+      _appendInput('^');
+    } else if (text == 'sqrt') {
+      _calculateSquareRoot();
+    } else {
+      _appendInput(text);
+    }
   }
-}
 }
